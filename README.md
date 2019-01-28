@@ -4,4 +4,4 @@ You can build the client on Linux by executing the following
 cd ~/go/src/github.com/lu4p/ToRat_client
 env GOOS=windows GOARCH=amd64 go build -ldflags "-s -w -H windowsgui"
 ```
-(Dokumentation)[https://github.com/lu4p/ToRat/blob/master/README.md]
+[Dokumentation](https://github.com/lu4p/ToRat/blob/master/README.md)
