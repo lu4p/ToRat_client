@@ -1,4 +1,4 @@
-[Docs](https://github.com/lu4p/ToRat/blob/master/README.md)
+### [Docs](https://github.com/lu4p/ToRat/blob/master/README.md)
 
 ## Build Client for Windows
 You can build the client on Linux by executing the following
