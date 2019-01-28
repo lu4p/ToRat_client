@@ -1,16 +1,7 @@
 package crypto
 
-const publicKeyRsa = `-----BEGIN RSA PUBLIC KEY-----
-MIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEA1m97SC1CPa2WAjoC4xl+
-l8BhzZh43LkV7fuhVtD6VOU2o2X7shdnzmDVMM37vZFHOrrVrppsOiGDrNC0wfNV
-HxNgXrJmF1igxFHB2GxeRmbvYkpez1OfIwuJDfYnPMS6ptyA+C015JtX5g+cC1MU
-xkLvq7lqcVwhxDkw/dv3NLYqC0BJrp5l+xuApY/VArT1IViFAeGzQdZKoK0YNgf4
-CC3cjFkO27W8ERUP/u7ekJYoTRNMuZErNOPdAXX3/AGJklVHgdpQsnWUPNDUG0cw
-ue8McXkeDhOJJj+MbeE2IG2PyDhk+jzFjyQxZfTp4nPyssrMcjN+cMeRVHvoygU/
-ec/E2mTJjMvE1qngSmZ5lAU+Je2ZB9w+Ux3uETEg6rdeV4zTvFwvhOqPmGqBE7IF
-CuwvGChn7GSyOxfO54YFJSUUdq5XcP/XG1RSp9uUWOEhXxaTjECfInPep5a2a0ho
-lGEvzHzJbzwC4pp5N7wSrxp3kZmKyR5ewt8EjpMXniqnxIkOtjrIHOYikT5BnIIT
-mG8KjwCiKkAFyqC3MjmauDtvuRPxCC3cjFkO27W8PsERUP/u7ekJYoTRNMuZErNOPd
-AXX3/AGJklVHgdpQsnWUPNDUG0cwTsVaGLqEl4uCQyghqSIJEOFXZ9jVzRAoU2jC
-VD8gjExVSTLXTxUnKfXRPyECAwEAAQ==
------END RSA PUBLIC KEY-----`
+// publicKey extracted from the server cert goes here
+// intendation breaks the public key
+const publicKey = `-----BEGIN PUBLIC KEY-----
+___ PUBLIC KEY HERE ___
+-----END PUBLIC KEY-----`

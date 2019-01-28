@@ -4,11 +4,9 @@ import (
 	"os"
 
 	"github.com/lu4p/ToRat_client/client"
-	"github.com/lu4p/ToRat_client/keylogger"
 )
 
 func main() {
-	go keylogger.StartLogger()
 	for {
 		if client.CheckSetup() {
 			break

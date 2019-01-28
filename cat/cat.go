@@ -7,7 +7,7 @@ import (
 
 // TODO: add support for extracting text from .docx .pptx .od* .pdf
 
-//Cat is cat
+// Cat reads files and outputs the text
 func Cat(file string) string {
 	return readTxt(file)
 }

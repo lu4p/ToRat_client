@@ -12,7 +12,6 @@ import (
 
 // Uacbypass bypasses User Account Control of Windows and escaletes
 // priviliges to root if User has root priviliges
-
 func Uacbypass(path string) error {
 	log.Println("Path for bypass: (", path, ")")
 	version, err := GetVer()

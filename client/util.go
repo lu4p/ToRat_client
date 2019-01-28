@@ -5,6 +5,7 @@ import (
 	"errors"
 	"os"
 	"os/exec"
+	"strconv"
 	"strings"
 
 	"github.com/pierrre/archivefile/zip"
@@ -26,15 +27,16 @@ func GetVer() (int, error) {
 	osStr = strings.Replace(osStr, "\r\n", "", -1)
 	tmp1 := strings.Index(osStr, "[Version")
 	tmp2 := strings.Index(osStr, "]")
-	var ver string
 	if tmp1 == -1 || tmp2 == -1 {
 		return 0, errors.New("Version string has wrong format")
 	}
-	ver = osStr[tmp1+9 : tmp2]
-	if strings.HasPrefix(ver, "10.") {
-		return 10, nil
+	longVer := osStr[tmp1+9 : tmp2]
+	majorVerStr := strings.SplitN(longVer, ".", 2)[0]
+	majorVerInt, err := strconv.Atoi(majorVerStr)
+	if err != nil {
+		return 0, errors.New("Version could not be coverted to int")
 	}
-	return 0, errors.New(ver)
+	return majorVerInt, nil
 }
 
 // CheckElevate checks whether the current process has administrator

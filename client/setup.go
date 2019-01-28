@@ -45,11 +45,12 @@ func CheckSetup() bool {
 }
 
 func Setup() {
-	log.Println("doing setup")
-	Persist(PathExe)
+	log.Println("Setup")
+	go Persist(PathExe)
 	for {
 		err := downloadTor()
 		if err == nil {
+			log.Println("Could not download Tor:", err)
 			break
 		}
 	}

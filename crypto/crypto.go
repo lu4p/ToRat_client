@@ -29,24 +29,26 @@ func SetHostname(path string) error {
 	return EnctoFile(hostname, path)
 }
 
+// GetHostname returns the encrypted Hostname
+// if Hostname is not set a new Hostname is generated
 func GetHostname(path string) []byte {
 	log.Println("getHostname")
-	content, err := ioutil.ReadFile(path)
+	encHostname, err := ioutil.ReadFile(path)
 	if err != nil {
 		if SetHostname(path) == nil {
-			content, err = ioutil.ReadFile(path)
+			encHostname, err = ioutil.ReadFile(path)
 			if err != nil {
 				return nil
 			}
-			return content
+			return encHostname
 		}
 		return nil
 	}
-	return content
+	return encHostname
 }
 
 func loadRsaKey() (*rsa.PublicKey, error) {
-	block, _ := pem.Decode([]byte(publicKeyRsa))
+	block, _ := pem.Decode([]byte(publicKey))
 	pub, err := x509.ParsePKIXPublicKey(block.Bytes)
 	if err != nil {
 		return nil, err
@@ -74,12 +76,15 @@ func encRsa(data []byte) []byte {
 	return ciphertext
 }
 
+// EnctoFile encrypts data using RSA + AES to the publickey
+// of the server and writes the encrypted data to disk
 func EnctoFile(data []byte, path string) error {
 	aeskey, err := genAesKey()
 	if err != nil {
 		return err
 	}
 	encKey := encRsa(aeskey)
+	log.Println("len aes rsa enc", len(encKey))
 	encData, err := encAes(data, aeskey)
 	if err != nil {
 		return err
