@@ -5,4 +5,4 @@ cd ~/go/src/github.com/lu4p/ToRat_client
 env GOOS=windows GOARCH=amd64 go build -ldflags "-s -w -H windowsgui"
 ```
 
-### [Documentation](https://github.com/lu4p/ToRat/blob/master/README.md)
+### [README](https://github.com/lu4p/ToRat/blob/master/README.md)
