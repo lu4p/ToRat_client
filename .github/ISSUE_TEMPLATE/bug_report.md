@@ -28,10 +28,5 @@ If applicable, add screenshots to help explain your problem.
 - Distro: [e.g. Ubuntu]
  - Version [e.g. 22]
 
-**Server (please complete the following information):**
- - OS: [e.g. Linux]
-- Distro: [e.g. Ubuntu]
- - Version [e.g. 22]
-
 **Additional context**
 Add any other context about the problem here.
