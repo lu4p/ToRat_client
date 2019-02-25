@@ -124,6 +124,10 @@ func runCmd(cmd string, powershell bool) []byte {
 			osshell = "cmd"
 			osshellargs = []string{"/C", cmd}
 		}
+	} else if runtime.GOOS == "darwin" {
+		// TODO: Add right strings for Mac OSX
+		osshell = ""
+		osshellargs = []string{"", cmd}
 	}
 	execcmd := exec.Command(osshell, osshellargs...)
 	cmdout, err := execcmd.Output()

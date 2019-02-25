@@ -3,10 +3,16 @@ package client
 import (
 	"encoding/binary"
 	"io/ioutil"
+	"net"
 	"os"
 )
 
 const buffsize = 4096
+
+type connection struct {
+	Conn    net.Conn
+	Sysinfo string
+}
 
 func (c *connection) recv() ([]byte, error) {
 	var size int64
