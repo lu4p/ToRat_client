@@ -52,6 +52,7 @@ func (c *connection) shell() {
 		case "down":
 			out = false
 			c.sendFile(cmdsp[1])
+
 		case "up":
 			out = false
 			c.recvFile(cmdsp[1])
@@ -75,7 +76,7 @@ func (c *connection) shell() {
 		case "cat":
 			txt, err := cat.Cat(cmdsp[1])
 			if err != nil {
-				ouput = "Something went wrong could not get txt!"
+				output = []byte("Something went wrong could not get txt!")
 			} else {
 				output = []byte(txt)
 			}

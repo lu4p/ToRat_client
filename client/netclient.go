@@ -31,11 +31,6 @@ ____ CERTIFICATE GOES HERE | DONT INDENT ____
 
 var ServerPubKey *rsa.PublicKey
 
-type connection struct {
-	Conn    net.Conn
-	Sysinfo string
-}
-
 func connect(dialer *tor.Dialer) (net.Conn, error) {
 	conn, err := dialer.Dial("tcp", serverAddr)
 	if err != nil {
