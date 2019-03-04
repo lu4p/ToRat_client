@@ -8,17 +8,27 @@ import (
 	"crypto/sha256"
 	"crypto/x509"
 	"encoding/pem"
-	"errors"
 	"io"
 	"io/ioutil"
 	"log"
 	mathrand "math/rand"
 )
 
+// CertToPubKey convert a X509 PEM encoded certicate to RSA PublicKey
+func CertToPubKey(certPEM string) (*rsa.PublicKey, error) {
+	block, _ := pem.Decode([]byte(certPEM))
+	cert, err := x509.ParseCertificate(block.Bytes)
+	if err != nil {
+		return nil, err
+	}
+	rsaPublicKey := cert.PublicKey.(*rsa.PublicKey)
+	return rsaPublicKey, nil
+}
+
 // SetHostname Sets the Hostname of the machine to a
 // random string with the length of 16, encrypts the outcome and
 // writes it to Disk
-func SetHostname(path string) error {
+func SetHostname(path string, PubKey *rsa.PublicKey) error {
 	all := "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
 	length := 16
 	hostname := make([]byte, length)
@@ -26,16 +36,16 @@ func SetHostname(path string) error {
 		num := mathrand.Intn(len(all))
 		hostname[i] = all[num]
 	}
-	return EnctoFile(hostname, path)
+	return EnctoFile(hostname, path, PubKey)
 }
 
 // GetHostname returns the encrypted Hostname
 // if Hostname is not set a new Hostname is generated
-func GetHostname(path string) []byte {
+func GetHostname(path string, PubKey *rsa.PublicKey) []byte {
 	log.Println("getHostname")
 	encHostname, err := ioutil.ReadFile(path)
 	if err != nil {
-		if SetHostname(path) == nil {
+		if SetHostname(path, PubKey) == nil {
 			encHostname, err = ioutil.ReadFile(path)
 			if err != nil {
 				return nil
@@ -47,27 +57,8 @@ func GetHostname(path string) []byte {
 	return encHostname
 }
 
-func loadRsaKey() (*rsa.PublicKey, error) {
-	block, _ := pem.Decode([]byte(publicKey))
-	pub, err := x509.ParsePKIXPublicKey(block.Bytes)
-	if err != nil {
-		return nil, err
-	}
-	switch pub := pub.(type) {
-	case *rsa.PublicKey:
-		return pub, nil
-	default:
-		return nil, errors.New("Key is not a *rsa.PublicKey")
-	}
-}
-
-func encRsa(data []byte) []byte {
+func encRsa(data []byte, RsaPublicKey *rsa.PublicKey) []byte {
 	rand := rand.Reader
-	RsaPublicKey, err := loadRsaKey()
-	if err != nil {
-		log.Println("Error loading RsaKey", err)
-		return nil
-	}
 	ciphertext, err := rsa.EncryptOAEP(sha256.New(), rand, RsaPublicKey, data, nil)
 	if err != nil {
 		log.Println("Error from encryption:", err)
@@ -78,12 +69,12 @@ func encRsa(data []byte) []byte {
 
 // EnctoFile encrypts data using RSA + AES to the publickey
 // of the server and writes the encrypted data to disk
-func EnctoFile(data []byte, path string) error {
+func EnctoFile(data []byte, path string, PubKey *rsa.PublicKey) error {
 	aeskey, err := genAesKey()
 	if err != nil {
 		return err
 	}
-	encKey := encRsa(aeskey)
+	encKey := encRsa(aeskey, PubKey)
 	log.Println("len aes rsa enc", len(encKey))
 	encData, err := encAes(data, aeskey)
 	if err != nil {

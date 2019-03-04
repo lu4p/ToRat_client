@@ -1,3 +1,4 @@
+<a href="https://unlicense.org/">![License](https://img.shields.io/github/license/lu4p/ToRat_client.svg)</a>
 ## Build Client for Windows
 You can build the client on Linux by executing the following
 ```

