@@ -11,6 +11,7 @@ jobs:
     steps:
       - checkout
       - run: sudo apt install build-essential libtool autopoint -y
+      - run_ go get -u -v github.com/cretz/bine
       - run: go get -u -v ./...
       - run: ls
       - run: go run build.go build-all
