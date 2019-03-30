@@ -14,4 +14,4 @@ jobs:
 
       # specify any bash command here prefixed with `run: `
       - run: go get -v ./...
-- run: go build
+      - run: go build
