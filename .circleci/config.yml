@@ -8,7 +8,8 @@ jobs:
     docker:
       - image: circleci/golang
     working_directory: /go/src/github.com/cretz/tor-static
-    steps:      
+    steps:
+      - checkout
       - run: sudo apt install build-essential libtool autopoint -y
       - run: go get -u -v ./...
       - run: ls
