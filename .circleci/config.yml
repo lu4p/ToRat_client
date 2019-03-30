@@ -13,7 +13,7 @@ jobs:
       
       - run: sudo apt install build-essential libtool autopoint -y
       - run: go get -u -v github.com/cretz/bine
-      - run: git clone github.com/cretz/tor-static
+      - run: git clone https://github.com/cretz/tor-static.git
       - run: go get -u -v github.com/lu4p/ToRat_client
       - run: go run build.go build-all
       - run: cd /go/src/github.com/lu4p/ToRat_client
