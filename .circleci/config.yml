@@ -13,12 +13,7 @@ jobs:
       
       - run: apt install build-essential libtool autopoint -y
       - run: go get -u -v ./...
-      - go run build.go build-all
-    working_directory: /go/src/github.com/lu4p/ToRat_client/
-    steps:
-      - checkout
-
-      # specify any bash command here prefixed with `run: `
-      - run: go get -v ./...
+      - run: go run build.go build-all
+      - run: go get -v github.com/lu4p/ToRat_client
+      - run: cd /go/src/github.com/lu4p/ToRat_client
       - run: go build
-      
