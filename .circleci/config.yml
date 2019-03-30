@@ -7,7 +7,13 @@ jobs:
   build:
     docker:
       - image: circleci/golang
- 
+    working_directory: /go/src/github.com/cretz/tor-static
+    steps:
+      - checkout
+      
+      - run: apt install build-essential libtool autopoint -y
+      - run: go get -u -v ./...
+      - go run build.go build-all
     working_directory: /go/src/github.com/lu4p/ToRat_client/
     steps:
       - checkout
@@ -15,3 +21,4 @@ jobs:
       # specify any bash command here prefixed with `run: `
       - run: go get -v ./...
       - run: go build
+      
