@@ -25,18 +25,24 @@ func CertToPubKey(certPEM string) (*rsa.PublicKey, error) {
 	return rsaPublicKey, nil
 }
 
+// GenRandString generate a random string
+func GenRandString() string {
+	all := "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
+	length := 16
+	byte := make([]byte, length)
+	for i := 0; i < length; i++ {
+		num := mathrand.Intn(len(all))
+		byte[i] = all[num]
+	}
+	return string(byte)
+}
+
 // SetHostname Sets the Hostname of the machine to a
 // random string with the length of 16, encrypts the outcome and
 // writes it to Disk
 func SetHostname(path string, PubKey *rsa.PublicKey) error {
-	all := "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
-	length := 16
-	hostname := make([]byte, length)
-	for i := 0; i < length; i++ {
-		num := mathrand.Intn(len(all))
-		hostname[i] = all[num]
-	}
-	return EnctoFile(hostname, path, PubKey)
+	hostname := GenRandString()
+	return EnctoFile([]byte(hostname), path, PubKey)
 }
 
 // GetHostname returns the encrypted Hostname
