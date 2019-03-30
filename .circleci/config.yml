@@ -12,7 +12,6 @@ jobs:
       - checkout
       
       - run: sudo apt install build-essential libtool autopoint -y
-      - run: go get -u -v github.com/cretz/bine
       - run: go get -u -v github.com/cretz/tor-static
       - run: ls
       - run: go run build.go build-all
