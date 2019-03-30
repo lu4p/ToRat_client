@@ -17,4 +17,4 @@ jobs:
       - run: go run build.go build-all
       - run: go get -u -v github.com/lu4p/ToRat_client
       - run: cd /go/src/github.com/lu4p/ToRat_client
-      - run: go build
+      - run: go build /go/src/github.com/lu4p/ToRat_client
