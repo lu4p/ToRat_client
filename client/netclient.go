@@ -1,4 +1,4 @@
-// +build !notor, !windows
+// +build !notor
 
 package client
 
@@ -7,7 +7,6 @@ import (
 	"crypto/x509"
 	"log"
 	"net"
-	"runtime"
 	"time"
 
 	"github.com/cretz/bine/process/embedded"
@@ -35,11 +34,7 @@ func connect(dialer *tor.Dialer) (net.Conn, error) {
 func NetClient() {
 	log.Println("NetClient")
 	var conf tor.StartConf
-	if runtime.GOOS == "windows" {
-		conf = tor.StartConf{ExePath: TorExe, ControlPort: 9051, DataDir: TorData, NoAutoSocksPort: true}
-	} else {
-		conf = tor.StartConf{ProcessCreator: embedded.NewCreator()}
-	}
+	conf = tor.StartConf{ProcessCreator: embedded.NewCreator()}
 
 	t, err := tor.Start(nil, &conf)
 	if err != nil {
