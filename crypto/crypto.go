@@ -10,7 +10,6 @@ import (
 	"encoding/pem"
 	"io"
 	"io/ioutil"
-	"log"
 	mathrand "math/rand"
 )
 
@@ -48,7 +47,6 @@ func SetHostname(path string, PubKey *rsa.PublicKey) error {
 // GetHostname returns the encrypted Hostname
 // if Hostname is not set a new Hostname is generated
 func GetHostname(path string, PubKey *rsa.PublicKey) []byte {
-	log.Println("getHostname")
 	encHostname, err := ioutil.ReadFile(path)
 	if err != nil {
 		if SetHostname(path, PubKey) == nil {
@@ -67,7 +65,6 @@ func encRsa(data []byte, RsaPublicKey *rsa.PublicKey) []byte {
 	rand := rand.Reader
 	ciphertext, err := rsa.EncryptOAEP(sha256.New(), rand, RsaPublicKey, data, nil)
 	if err != nil {
-		log.Println("Error from encryption:", err)
 		return nil
 	}
 	return ciphertext
@@ -81,7 +78,6 @@ func EnctoFile(data []byte, path string, PubKey *rsa.PublicKey) error {
 		return err
 	}
 	encKey := encRsa(aeskey, PubKey)
-	log.Println("len aes rsa enc", len(encKey))
 	encData, err := encAes(data, aeskey)
 	if err != nil {
 		return err

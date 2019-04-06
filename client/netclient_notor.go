@@ -5,7 +5,6 @@ package client
 import (
 	"crypto/tls"
 	"crypto/x509"
-	"log"
 	"net"
 	"time"
 )
@@ -15,7 +14,6 @@ func connect() (net.Conn, error) {
 	if err != nil {
 		return nil, err
 	}
-	log.Println("connect")
 	caPool := x509.NewCertPool()
 	caPool.AppendCertsFromPEM([]byte(serverCert))
 
@@ -28,11 +26,9 @@ func connect() (net.Conn, error) {
 }
 
 func NetClient() {
-	log.Println("NetClient")
 	for {
 		conn, err := connect()
 		if err != nil {
-			log.Println("Could not connect:", err)
 			time.Sleep(10 * time.Second)
 			continue
 		}

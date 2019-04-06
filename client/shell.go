@@ -1,7 +1,6 @@
 package client
 
 import (
-	"log"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -31,7 +30,6 @@ func (c *connection) shell() {
 			return
 		}
 		cmd := string(cmdbyte)
-		log.Println("New cmd:", cmd)
 		cmdsp := strings.SplitN(cmd, " ", 2)
 		var output []byte
 		out := true
