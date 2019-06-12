@@ -17,5 +17,4 @@ YOUR CERT HERE
 
 var (
 	ServerPubKey, _ = crypto.CertToPubKey(serverCert)
-	WinTorLink      = "https://www.torproject.org/dist/torbrowser/8.0.7/tor-win32-0.3.5.8.zip"
 )
