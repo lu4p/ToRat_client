@@ -7,8 +7,7 @@ jobs:
   build:
     docker:
       - image: circleci/golang
-    working_directory: /go/src/github.com/lu4p/ToRat_client
+    working_directory: /
     steps:
-      - checkout
-      - run: go get -u -v github.com/lu4p/ToRat_client
-      - run: env GOOS=linux go build -tags "notor"
+      - run: git clone https://github.com/lu4p/ToRat_client.git
+      - run: env GOOS=linux go build ./ToRat_client -tags "notor"
