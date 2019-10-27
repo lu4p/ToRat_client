@@ -10,4 +10,4 @@ jobs:
     working_directory: /go/src/lu4p
     steps:
       - run: git clone https://github.com/lu4p/ToRat_client.git
-      - run: env GOOS=linux go build ./ToRat_client --tags "notor"
+      - run: cd ./ToRat_client; env GOOS=linux go build --tags "notor"
