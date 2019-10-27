@@ -7,7 +7,7 @@ jobs:
   build:
     docker:
       - image: circleci/golang
-    working_directory: /go/src/github.com/cretz/tor-static
+    working_directory: /go/src/github.com/lu4p/ToRat_client
     steps:
       - checkout
       - run: go get -u -v github.com/lu4p/ToRat_client
