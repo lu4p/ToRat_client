@@ -63,7 +63,7 @@ func (c *connection) shell() {
 			} else {
 				cwd, err := os.Getwd()
 				if err != nil {
-					output = []byte("Unkown")
+					output = []byte("Unknown")
 				} else {
 					output = []byte(cwd)
 				}

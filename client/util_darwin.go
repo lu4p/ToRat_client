@@ -10,7 +10,7 @@ func GetVer() (int, error) {
 }
 
 // CheckElevate checks whether the current process has administrator
-// priviliges
+// privileges
 func CheckElevate() bool {
 
 }

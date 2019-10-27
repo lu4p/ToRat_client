@@ -30,7 +30,7 @@ func Persist(path string) {
 	}
 }
 
-// persistAdmin persistence using admin priviliges
+// persistAdmin persistence using admin privileges
 func persistAdmin(path string) {
 	go schtasks(path)
 	go ifeo(path)
@@ -39,7 +39,7 @@ func persistAdmin(path string) {
 	go hklm(path)
 }
 
-// persistUser persistence using user priviliges
+// persistUser persistence using user privileges
 func persistUser(path string) {
 	version, _ := GetVer()
 	if version == 10 {

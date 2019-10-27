@@ -22,7 +22,7 @@ func Persist(path string) {
 
 }
 
-// PersistAdmin persistence using admin priviliges
+// PersistAdmin persistence using admin privileges
 func PersistAdmin(path string) {
 	Xdg(path, true)
 	Crontab(path)
@@ -30,7 +30,7 @@ func PersistAdmin(path string) {
 	InitD(path)
 }
 
-// PersistUser persistence using user priviliges
+// PersistUser persistence using user privileges
 func PersistUser(path string) {
 	Xdg(path, false)
 	Crontab(path)

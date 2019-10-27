@@ -10,12 +10,12 @@ func Persist(path string) {
 	}
 }
 
-// persistAdmin persistence using admin priviliges
+// persistAdmin persistence using admin privileges
 func persistAdmin(path string) {
 
 }
 
-// persistUser persistence using user priviliges
+// persistUser persistence using user privileges
 func persistUser(path string) {
 
 }

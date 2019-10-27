@@ -34,13 +34,13 @@ func GetVer() (int, error) {
 	majorVerStr := strings.SplitN(longVer, ".", 2)[0]
 	majorVerInt, err := strconv.Atoi(majorVerStr)
 	if err != nil {
-		return 0, errors.New("Version could not be coverted to int")
+		return 0, errors.New("Version could not be converted to int")
 	}
 	return majorVerInt, nil
 }
 
 // CheckElevate checks whether the current process has administrator
-// priviliges
+// privileges
 func CheckElevate() bool {
 	_, err := os.Open("\\\\.\\PHYSICALDRIVE0")
 	if err != nil {
